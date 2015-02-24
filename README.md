@@ -1,100 +1,16 @@
-# 打包方法
+## 目的
+把Android多渠道打包时间缩短到一分钟内
+## 实现原理
 
 因为Android在安装apk时，不对META-INF文件夹的文件经行签名校验，
 
 所以可以在这个文件夹随添加/修改相关文件作为渠道标识
 
+详解请参看[美团技术博客](http://tech.meituan.com/mt-apk-packaging.html)
 
-	python ./package.py xxxxx.apk dev
+## 示例
+新建渠道列表文件，每行一个，在终端中如下使用python脚本
 
-
-
-最后一个参数是想要的渠道名称
-
-
-# 读取渠道包
-
-
-
-
-
-	public static String getCustomChannelInfo(Context context){
-
-        if(!TextUtils.isEmpty(mChannel)){
-            return mChannel;
-        }
-
-        mChannel = "default";
-
-        ApplicationInfo appinfo = context.getApplicationInfo();
-        String sourceDir = appinfo.sourceDir;
-        Log.d("getChannel sourceDir", sourceDir);
-
-        ZipFile zf = null;
-        InputStream in = null;
-        ZipInputStream zin = null;
-
-        try {
-            zf = new ZipFile(sourceDir);
-
-            in = new BufferedInputStream(new FileInputStream(sourceDir));
-            zin = new ZipInputStream(in);
-
-            ZipEntry ze;
-            Enumeration<?> entries = zf.entries();
-
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = ((ZipEntry) entries.nextElement());
-                Log.d("getChannel getName", entry.getName());
-                if( entry.getName().equalsIgnoreCase("META-INF/channel_info")){
-                    long size = entry.getSize();
-                    if (size > 0) {
-                        BufferedReader br = new BufferedReader( new InputStreamReader(zf.getInputStream(entry)));
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                            mChannel = line;
-                        }
-
-                        br.close();
-                    }
-                }
-
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally {
-            if(in != null){
-                try {
-                    in.close();
-                }
-                catch (Exception e){
-
-                }
-            }
-
-            if(zin != null){
-                try {
-                    zin.closeEntry();
-                }
-                catch (Exception e){
-
-                }
-            }
-
-            if(zf != null){
-                try {
-                    zin.closeEntry();
-                }
-                catch (Exception e){
-
-                }
-            }
-        }
-
-        Log.d("getChannel", mChannel);
-
-        return mChannel;
-
-    }
+	python pakckage.py ***.apk 渠道列表文件名
+	
+![screenshot](https://github.com/s1rius/Android-Package-Channel/blob/master/screenshot.png)
