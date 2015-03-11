@@ -47,11 +47,15 @@ if os.path.isfile(sys.argv[1]) != True:
 start = datetime.datetime.now()
 position = 0;
 
-f = open(sys.argv[2], 'r')
-for line in f.readlines(): 
-    line=line.strip('\n').strip()
-    if line and not hasChinese(line) and not line.startswith('//'):
-            packageWithChannel(sys.argv[1], line)
-            position += 1
+if os.path.isfile(sys.argv[2]):
+	f = open(sys.argv[2], 'r')
+	for line in f.readlines(): 
+	    line=line.strip('\n').strip()
+	    if line and not hasChinese(line) and not line.startswith('//'):
+	            packageWithChannel(sys.argv[1], line)
+	            position += 1
+else:
+	packageWithChannel(sys.argv[1], sys.argv[2])
+	position += 1
 end  = datetime.datetime.now()
 print '%s秒生成渠道包%s个' % ("{:.2f}".format((end-start).microseconds / 1000000.0), position)
