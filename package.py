@@ -22,11 +22,14 @@ def packageWithChannel(fileName, channelName):
     file_path = "META-INF/" + empty_file_name
 
     zipped.write(empty_file_name, file_path)
-
     zipped.close()
+    empty.close()
 
     targetFile = fileName.replace(".apk", "_" + channelName) + ".apk"
     shutil.move(tempFile, targetFile)
+    # delete unuse file
+    if os.path.exists(empty_file_name):
+        os.remove(empty_file_name)
 
     print u'渠道名称:' + channelName
     print  u'生成文件:' + targetFile
