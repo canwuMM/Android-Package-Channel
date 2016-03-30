@@ -1,5 +1,5 @@
 # !/usr/bin/env python
-# encoding:utf-8
+# -*- coding:utf-8 -*-
 import zipfile,sys,shutil,os,datetime
 
 def hasChinese(str):
@@ -15,22 +15,21 @@ def packageWithChannel(fileName, channelName):
     tempFile = fileName + "___tem"
     shutil.copy(fileName, tempFile)
     
-    empty = file("empty_file", 'w')
+    empty_file_name = CHANNEL_PREFIX + '_' + channelName
+    empty = file(empty_file_name, 'w')
 
     zipped = zipfile.ZipFile(tempFile, 'a', zipfile.ZIP_DEFLATED) 
-    file_path = "META-INF/" + CHANNEL_PREFIX + "_{channel}"
-    empty_channel_file = file_path.format(channel = channelName)
+    file_path = "META-INF/" + empty_file_name
 
-    zipped.write("empty_file", empty_channel_file)
+    zipped.write(empty_file_name, file_path)
 
     zipped.close()
 
-    os.remove('empty_file')
-
-    targetFile = fileName.replace(".apk", "-" + channelName) + ".apk"
+    targetFile = fileName.replace(".apk", "_" + channelName) + ".apk"
     shutil.move(tempFile, targetFile)
-    print "渠道名称: " + channelName
-    print "生成文件: " + targetFile
+
+    print u'渠道名称:' + channelName
+    print  u'生成文件:' + targetFile
 
 if len(sys.argv) < 3 :
     print "parameter error"
@@ -58,4 +57,6 @@ else:
 	packageWithChannel(sys.argv[1], sys.argv[2])
 	position += 1
 end  = datetime.datetime.now()
-print '%s秒生成渠道包%s个' % ("{:.2f}".format((end-start).microseconds / 1000000.0), position)
+use_time = "{:.2f}".format((end-start).microseconds / 1000000.0)
+desc = use_time + u'秒生成渠道包' + '%d'%position + u'个'
+print desc
