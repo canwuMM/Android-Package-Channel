@@ -1,3 +1,7 @@
+
+## Deprecated 
+已过时 请使用 [walle](https://github.com/Meituan-Dianping/walle)
+
 ## 目的
 把Android多渠道打包时间缩短到一分钟内
 ## 实现原理
